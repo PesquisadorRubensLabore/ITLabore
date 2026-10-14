@@ -1,745 +1,387 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="h-full bg-slate-900 text-slate-100">
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Labore UNICAMP - Instruções de Trabalho (IT)</title>
+  <title>IT - Bancada de Dano à Formação | LABORE UNICAMP</title>
   <!-- Tailwind CSS via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Tailwind Configuration -->
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
   <script>
     tailwind.config = {
       theme: {
         extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
           colors: {
-            unicamp: {
-              red: '#C8102E',
-              blue: '#005691',
-              darkBlue: '#0f172a',
-              accent: '#38bdf8'
+            labore: {
+              navy: '#002B49',     // Azul Petróleo / Noturno (Identidade LABORE)
+              red: '#C8102E',      // Vermelho UNICAMP
+              redDark: '#A6192E',
+              lightBg: '#F4F6F9',
+              slate: '#475569',
+              green: '#10B981',    // Verde Concluído
             }
           }
         }
       }
     }
   </script>
-  <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <!-- Inter Font -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
   <style>
-    body { font-family: 'Inter', sans-serif; }
-    /* Scrollbar personalizada */
-    ::-webkit-scrollbar { width: 8px; height: 8px; }
-    ::-webkit-scrollbar-track { background: #0f172a; }
-    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: #475569; }
-    
-    /* Conectores do Fluxograma */
-    .flow-connector::after {
-      content: '';
-      position: absolute;
-      bottom: -24px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 2px;
-      height: 24px;
-      background-color: #475569;
+    /* Estilização personalizada para transições e lista interativa */
+    .step-item {
+      transition: all 0.2s ease-in-out;
     }
-    .flow-connector-horizontal::after {
-      content: '';
-      position: absolute;
-      right: -24px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 24px;
-      height: 2px;
-      background-color: #475569;
+    .step-item.completed {
+      background-color: #ECFDF5;
+      border-color: #10B981;
+    }
+    .step-item.completed .checkbox-box {
+      background-color: #10B981;
+      border-color: #10B981;
+      color: white;
+    }
+    .step-item.completed .step-text {
+      color: #065F46;
+      text-decoration: line-through;
+    }
+    .carousel-slide {
+      display: none;
+      transition: opacity 0.3s ease-in-out;
+    }
+    .carousel-slide.active {
+      display: block;
     }
   </style>
 </head>
-<body class="h-full flex flex-col bg-slate-950 text-slate-100 antialiased">
+<body class="bg-labore-lightBg text-slate-800 font-sans min-h-screen flex flex-col justify-between">
 
-  <!-- Header Superior -->
-  <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-40 shadow-lg">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-      <div class="flex items-center gap-3 cursor-pointer" onclick="navigateTo('hub')">
-        <div class="w-10 h-10 rounded-lg bg-red-700 flex items-center justify-center font-bold text-white shadow-md shadow-red-900/40">
-          U
+  <!-- CABEÇALHO / HEADER -->
+  <header class="bg-labore-navy text-white shadow-md border-b-4 border-labore-red sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center">
+      <div class="flex items-center space-x-4 cursor-pointer" onclick="showView('home')">
+        <!-- Logotipo do LABORE / UNICAMP Stilizado -->
+        <div class="w-10 h-10 bg-white rounded-md flex items-center justify-center font-bold text-labore-navy text-xl shadow">
+          <span class="text-labore-red">L</span>B
         </div>
         <div>
-          <h1 class="font-bold text-lg leading-tight tracking-wide text-white">Labore <span class="text-sky-400">UNICAMP</span></h1>
-          <p class="text-xs text-slate-400">Sistema de Instruções de Trabalho (IT)</p>
+          <h1 class="text-lg font-bold leading-tight">LABORE</h1>
+          <p class="text-xs text-slate-300">Laboratório de Reservatórios de Petróleo — FEM / UNICAMP</p>
         </div>
       </div>
-
-      <nav class="flex items-center gap-2">
-        <button onclick="navigateTo('hub')" id="nav-hub-btn" class="px-3 py-1.5 rounded-md text-sm font-medium transition-colors bg-sky-600 text-white hover:bg-sky-500 flex items-center gap-1.5">
-          <i data-lucide="layout-grid" class="w-4 h-4"></i>
-          <span>Hub de ITs</span>
-        </button>
-        <span class="text-slate-700">|</span>
-        <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-md text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition-colors flex items-center gap-1.5" title="Hospedado no GitHub Pages">
-          <i data-lucide="github" class="w-4 h-4"></i>
-          <span class="hidden sm:inline">GitHub Pages</span>
-        </a>
-      </nav>
+      <div class="flex items-center space-x-3">
+        <span class="text-xs bg-slate-800 px-3 py-1 rounded-full text-slate-300 border border-slate-700 hidden sm:inline-block">
+          Instrução de Trabalho (IT) v1.0
+        </span>
+      </div>
     </div>
   </header>
 
-  <!-- Conteúdo Principal Dinâmico -->
-  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+  <!-- CONTEÚDO PRINCIPAL (MUDANÇA DE TELAS) -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
 
-    <!-- VIEW 1: HUB CENTRAL DE ITs -->
-    <section id="view-hub" class="space-y-6">
-      <!-- Banner do Laboratório -->
-      <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 relative overflow-hidden shadow-xl">
-        <div class="absolute right-0 top-0 bottom-0 w-1/3 bg-blue-500/5 blur-3xl pointer-events-none"></div>
-        <div class="max-w-2xl relative z-10 space-y-3">
-          <span class="px-3 py-1 rounded-full text-xs font-semibold bg-sky-500/10 text-sky-400 border border-sky-500/20 uppercase tracking-wider">
-            Portal Oficial de Procedimentos
-          </span>
-          <h2 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">
-            Instruções de Trabalho do Laboratório
-          </h2>
-          <p class="text-slate-400 text-sm sm:text-base leading-relaxed">
-            Selecione uma Instrução de Trabalho (IT) abaixo para visualizar o procedimento operacional interativo em formato de fluxograma de processo detalhado.
-          </p>
-        </div>
+    <!-- ==================== PÁGINA PRINCIPAL (SELEÇÃO) ==================== -->
+    <div id="view-home" class="space-y-6">
+      <div class="text-center max-w-3xl mx-auto py-4">
+        <h2 class="text-3xl font-extrabold text-labore-navy sm:text-4xl">Hub de Instruções de Trabalho</h2>
+        <p class="mt-3 text-slate-600 text-base">
+          Selecione o procedimento operacional para iniciar a execução interativa dos testes e montagem de bancadas.
+        </p>
       </div>
 
-      <!-- Barra de Filtro e Busca -->
-      <div class="flex flex-col sm:flex-row items-center justify-between gap-4 bg-slate-900 p-4 rounded-xl border border-slate-800">
-        <div class="relative w-full sm:w-80">
-          <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
-          <input type="text" id="search-input" onkeyup="filterITs()" placeholder="Buscar instrução ou palavra-chave..." class="w-full bg-slate-950 border border-slate-800 rounded-lg pl-9 pr-4 py-2 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-sky-500 transition-colors">
-        </div>
-        <div class="flex items-center gap-2 text-xs text-slate-400 w-full sm:w-auto justify-end">
-          <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-          <span>Sistema Atualizado • Versão 0.1</span>
-        </div>
-      </div>
-
-      <!-- Grid de Cartões de ITs -->
-      <div id="it-cards-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
-        <!-- Renderizado via JavaScript -->
-      </div>
-    </section>
-
-    <!-- VIEW 2: SUBPÁGINA DETALHADA DA IT (FLUXOGRAMA INTERATIVO) -->
-    <section id="view-it-detail" class="hidden space-y-6">
-      
-      <!-- Cabeçalho e Navegação da IT -->
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-900 p-5 rounded-2xl border border-slate-800">
-        <div class="space-y-1">
-          <button onclick="navigateTo('hub')" class="inline-flex items-center gap-1 text-xs text-sky-400 hover:text-sky-300 font-medium mb-1 transition-colors">
-            <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
-            <span>Voltar ao Hub de ITs</span>
-          </button>
-          <h2 id="it-detail-title" class="text-xl font-bold text-white">Carregando IT...</h2>
-          <p id="it-detail-meta" class="text-xs text-slate-400">Elaborado por: - | Versão: -</p>
-        </div>
-
-        <div class="flex items-center gap-2">
-          <button onclick="expandAllSteps()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-300 border border-slate-700 transition-colors flex items-center gap-1.5">
-            <i data-lucide="maximize-2" class="w-3.5 h-3.5"></i>
-            <span>Expandir Tudo</span>
-          </button>
-          <button onclick="printIT()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-300 border border-slate-700 transition-colors flex items-center gap-1.5">
-            <i data-lucide="printer" class="w-3.5 h-3.5"></i>
-            <span>Imprimir IT</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Layout em Duas Colunas: Fluxograma à Esquerda e Painel Detalhado à Direita -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        
-        <!-- Coluna Esquerda: Fluxograma Visual (7 cols em lg) -->
-        <div class="lg:col-span-7 bg-slate-900 rounded-2xl border border-slate-800 p-5 space-y-4">
-          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-            <h3 class="text-sm font-semibold text-slate-200 uppercase tracking-wider flex items-center gap-2">
-              <i data-lucide="git-merge" class="w-4 h-4 text-sky-400"></i>
-              Fluxograma do Procedimento
-            </h3>
-            <span class="text-xs text-slate-500">Clique em uma etapa para ver detalhes</span>
-          </div>
-
-          <!-- Container do Fluxograma -->
-          <div id="flowchart-container" class="space-y-6 py-2">
-            <!-- Etapas inseridas via JS -->
-          </div>
-        </div>
-
-        <!-- Coluna Direita: Painel de Detalhes da Etapa Selecionada (5 cols em lg) -->
-        <div class="lg:col-span-5 bg-slate-900 rounded-2xl border border-slate-800 p-5 space-y-5 sticky top-20 shadow-2xl">
-          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-            <h3 class="text-sm font-semibold text-slate-200 uppercase tracking-wider flex items-center gap-2">
-              <i data-lucide="file-text" class="w-4 h-4 text-emerald-400"></i>
-              Detalhes & Instruções
-            </h3>
-            <span id="selected-step-badge" class="px-2 py-0.5 rounded text-[10px] font-bold bg-sky-500/20 text-sky-400 border border-sky-500/30">
-              Etapa Selecionada
+      <!-- CARD UNIFICADO DA BANCADA DE DANO À FORMAÇÃO -->
+      <div class="max-w-3xl mx-auto bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden hover:shadow-xl transition-shadow duration-300">
+        <div class="p-6 sm:p-8">
+          <div class="flex items-center justify-between mb-4">
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-labore-red">
+              Procedimento Completo
             </span>
+            <span class="text-xs text-slate-500 font-mono">IT-LABORE-BDF-01</span>
           </div>
 
-          <!-- Conteúdo do Detalhe Selecionado -->
-          <div id="step-detail-content" class="space-y-4">
-            <!-- Renderizado via JS conforme clique -->
+          <h3 class="text-2xl font-bold text-labore-navy mb-2">
+            Bancada de Dano à Formação (Montagem & Operação)
+          </h3>
+          <p class="text-slate-600 mb-6 text-sm leading-relaxed">
+            Procedimento operacional completo e unificado que aborda desde a montagem física da linha fluídica e conectores da bancada de dano, até a partida dos softwares Quizix e LabVIEW para injeção e aquisição de dados.
+          </p>
+
+          <div class="grid grid-cols-2 gap-4 mb-6 text-xs text-slate-500 border-t border-b border-slate-100 py-3">
+            <div class="flex items-center space-x-2">
+              <i data-lucide="wrench" class="w-4 h-4 text-labore-red"></i>
+              <span>Montagem e Ajustes</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <i data-lucide="play-circle" class="w-4 h-4 text-labore-navy"></i>
+              <span>Operação & Quizix/LabVIEW</span>
+            </div>
+          </div>
+
+          <button onclick="showView('detail')" class="w-full bg-labore-red hover:bg-labore-redDark text-white font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center space-x-2 shadow">
+            <span>Iniciar Instrução de Trabalho</span>
+            <i data-lucide="arrow-right" class="w-5 h-5"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ==================== SUBPÁGINA (PROCEDIMENTO DETALHADO) ==================== -->
+    <div id="view-detail" class="hidden space-y-6">
+
+      <!-- BARRA DE NAVEGAÇÃO E AÇÕES -->
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-200 pb-4">
+        <div>
+          <button onclick="showView('home')" class="text-sm text-slate-500 hover:text-labore-navy flex items-center space-x-1 mb-2 transition-colors">
+            <i data-lucide="chevron-left" class="w-4 h-4"></i>
+            <span>Voltar ao Hub</span>
+          </button>
+          <h2 class="text-2xl font-bold text-labore-navy">IT: Bancada de Dano à Formação</h2>
+          <p class="text-xs text-slate-500">Siga o passo a passo clicando nos quadrados de verificação para registrar o progresso.</p>
+        </div>
+
+        <!-- Botão de Download apontando para o arquivo no GitHub Pages -->
+        <div class="flex items-center space-x-3">
+          <a id="download-btn" href="./documents/Instrucao_bancada_dano.pdf" target="_blank" download class="bg-slate-800 hover:bg-slate-900 text-white text-sm font-medium py-2.5 px-4 rounded-lg flex items-center space-x-2 shadow transition-colors">
+            <i data-lucide="file-down" class="w-4 h-4 text-labore-red"></i>
+            <span>Download da IT (PDF)</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- PAINEL DIVIDIDO: ESQUERDA (CHECKLIST) | DIREITA (CARROSSEL) -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+        <!-- LADO ESQUERDO: CHECKLIST PASSO A PASSO (8 COLUNAS) -->
+        <div class="lg:col-span-7 space-y-6">
+
+          <!-- ETAPA 1: MONTAGEM FÍSICA -->
+          <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
+            <div class="flex items-center space-x-3 mb-4 pb-2 border-b border-slate-100">
+              <span class="w-7 h-7 bg-labore-navy text-white rounded-full flex items-center justify-center font-bold text-sm">1</span>
+              <h3 class="text-lg font-bold text-labore-navy">Montagem Física e Linha Fluídica</h3>
+            </div>
+
+            <div class="space-y-3">
+              <div class="step-item p-3 border rounded-lg cursor-pointer flex items-start space-x-3 select-none" onclick="toggleStep(this)">
+                <div class="checkbox-box w-5 h-5 border-2 border-slate-300 rounded flex items-center justify-center mt-0.5 flex-shrink-0">
+                  <i data-lucide="check" class="w-3.5 h-3.5 opacity-0"></i>
+                </div>
+                <span class="step-text text-sm text-slate-700">Conectar os tubos de entrada de fluido na porca superior da porta-amostra.</span>
+              </div>
+
+              <div class="step-item p-3 border rounded-lg cursor-pointer flex items-start space-x-3 select-none" onclick="toggleStep(this)">
+                <div class="checkbox-box w-5 h-5 border-2 border-slate-300 rounded flex items-center justify-center mt-0.5 flex-shrink-0">
+                  <i data-lucide="check" class="w-3.5 h-3.5 opacity-0"></i>
+                </div>
+                <span class="step-text text-sm text-slate-700">Verificar a vedação das conexões de alta pressão antes da pressurização.</span>
+              </div>
+
+              <div class="step-item p-3 border rounded-lg cursor-pointer flex items-start space-x-3 select-none" onclick="toggleStep(this)">
+                <div class="checkbox-box w-5 h-5 border-2 border-slate-300 rounded flex items-center justify-center mt-0.5 flex-shrink-0">
+                  <i data-lucide="check" class="w-3.5 h-3.5 opacity-0"></i>
+                </div>
+                <span class="step-text text-sm text-slate-700">Ajustar a pressão de confino (Sleeve) de acordo com o protocolo da rocha.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- ETAPA 2: OPERAÇÃO SOFTWARES E BOMBA -->
+          <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
+            <div class="flex items-center space-x-3 mb-4 pb-2 border-b border-slate-100">
+              <span class="w-7 h-7 bg-labore-red text-white rounded-full flex items-center justify-center font-bold text-sm">2</span>
+              <h3 class="text-lg font-bold text-labore-navy">Inicialização e Operação dos Softwares</h3>
+            </div>
+
+            <div class="space-y-3">
+              <div class="step-item p-3 border rounded-lg cursor-pointer flex items-start space-x-3 select-none" onclick="toggleStep(this)">
+                <div class="checkbox-box w-5 h-5 border-2 border-slate-300 rounded flex items-center justify-center mt-0.5 flex-shrink-0">
+                  <i data-lucide="check" class="w-3.5 h-3.5 opacity-0"></i>
+                </div>
+                <span class="step-text text-sm text-slate-700">Ligar a bomba Quizix e verificar a comunicação via painel de controle.</span>
+              </div>
+
+              <div class="step-item p-3 border rounded-lg cursor-pointer flex items-start space-x-3 select-none" onclick="toggleStep(this)">
+                <div class="checkbox-box w-5 h-5 border-2 border-slate-300 rounded flex items-center justify-center mt-0.5 flex-shrink-0">
+                  <i data-lucide="check" class="w-3.5 h-3.5 opacity-0"></i>
+                </div>
+                <span class="step-text text-sm text-slate-700">Abrir o software LabVIEW e carregar o VI específico de Injeção de Dano.</span>
+              </div>
+
+              <div class="step-item p-3 border rounded-lg cursor-pointer flex items-start space-x-3 select-none" onclick="toggleStep(this)">
+                <div class="checkbox-box w-5 h-5 border-2 border-slate-300 rounded flex items-center justify-center mt-0.5 flex-shrink-0">
+                  <i data-lucide="check" class="w-3.5 h-3.5 opacity-0"></i>
+                </div>
+                <span class="step-text text-sm text-slate-700">Configurar as vazões de injeção na interface do Quizix PumpWorks.</span>
+              </div>
+
+              <div class="step-item p-3 border rounded-lg cursor-pointer flex items-start space-x-3 select-none" onclick="toggleStep(this)">
+                <div class="checkbox-box w-5 h-5 border-2 border-slate-300 rounded flex items-center justify-center mt-0.5 flex-shrink-0">
+                  <i data-lucide="check" class="w-3.5 h-3.5 opacity-0"></i>
+                </div>
+                <span class="step-text text-sm text-slate-700">Iniciar a aquisição contínua de pressão diferencial ($\Delta P$) e vazão no LabVIEW.</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+
+        <!-- LADO DIREITO: CARROSSEL DE IMAGENS (5 COLUNAS) -->
+        <div class="lg:col-span-5 sticky top-24">
+          <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="bg-slate-900 px-4 py-3 text-white flex justify-between items-center border-b border-slate-800">
+              <span class="text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5">
+                <i data-lucide="image" class="w-4 h-4 text-labore-red"></i> Esquema e Diagramas
+              </span>
+              <span id="carousel-indicator" class="text-xs text-slate-400 font-mono">1 / 3</span>
+            </div>
+
+            <!-- SLIDES DO CARROSSEL -->
+            <div class="relative bg-slate-100 min-h-[260px] flex items-center justify-center">
+              
+              <!-- Slide 1 -->
+              <div class="carousel-slide active w-full p-4 text-center">
+                <div class="bg-white p-6 rounded-lg border border-slate-200 shadow-inner flex flex-col items-center justify-center">
+                  <i data-lucide="box" class="w-16 h-16 text-labore-navy mb-2"></i>
+                  <p class="font-bold text-slate-700 text-sm">Diagrama de Montagem - Porta Amostra</p>
+                  <p class="text-xs text-slate-400 mt-1">[Substitua com a foto da montagem física]</p>
+                </div>
+                <p class="text-xs text-slate-500 mt-2 italic">Figura 1: Esquema de conexão e linhas de pressão da bancada.</p>
+              </div>
+
+              <!-- Slide 2 -->
+              <div class="carousel-slide w-full p-4 text-center">
+                <div class="bg-white p-6 rounded-lg border border-slate-200 shadow-inner flex flex-col items-center justify-center">
+                  <i data-lucide="sliders" class="w-16 h-16 text-labore-red mb-2"></i>
+                  <p class="font-bold text-slate-700 text-sm">Interface LabVIEW</p>
+                  <p class="text-xs text-slate-400 mt-1">[Substitua com o print do software LabVIEW]</p>
+                </div>
+                <p class="text-xs text-slate-500 mt-2 italic">Figura 2: Monitoramento de pressão diferencial em tempo real.</p>
+              </div>
+
+              <!-- Slide 3 -->
+              <div class="carousel-slide w-full p-4 text-center">
+                <div class="bg-white p-6 rounded-lg border border-slate-200 shadow-inner flex flex-col items-center justify-center">
+                  <i data-lucide="activity" class="w-16 h-16 text-emerald-600 mb-2"></i>
+                  <p class="font-bold text-slate-700 text-sm">Bomba Quizix e Painel</p>
+                  <p class="text-xs text-slate-400 mt-1">[Substitua com a imagem da bomba Quizix]</p>
+                </div>
+                <p class="text-xs text-slate-500 mt-2 italic">Figura 3: Configuração de vazão contínua da bomba.</p>
+              </div>
+
+              <!-- BOTÕES DE NAVEGAÇÃO -->
+              <button onclick="prevSlide()" class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/70 text-white p-2 rounded-full transition-colors">
+                <i data-lucide="chevron-left" class="w-5 h-5"></i>
+              </button>
+              <button onclick="nextSlide()" class="absolute right-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/70 text-white p-2 rounded-full transition-colors">
+                <i data-lucide="chevron-right" class="w-5 h-5"></i>
+              </button>
+            </div>
+
+            <!-- INDICADORES POR PONTOS -->
+            <div class="py-3 bg-slate-50 border-t border-slate-100 flex justify-center space-x-2">
+              <span class="carousel-dot w-2.5 h-2.5 rounded-full bg-labore-navy cursor-pointer" onclick="goToSlide(0)"></span>
+              <span class="carousel-dot w-2.5 h-2.5 rounded-full bg-slate-300 cursor-pointer" onclick="goToSlide(1)"></span>
+              <span class="carousel-dot w-2.5 h-2.5 rounded-full bg-slate-300 cursor-pointer" onclick="goToSlide(2)"></span>
+            </div>
           </div>
         </div>
 
       </div>
 
-    </section>
+    </div>
 
   </main>
 
-  <!-- Footer -->
-  <footer class="bg-slate-900 border-t border-slate-800 py-4 mt-auto">
-    <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-500 flex flex-col sm:flex-row items-center justify-between gap-2">
-      <p>Labore UNICAMP &copy; 2026 - Desenvolvido para facilitar a operação de bancadas laboratoriais.</p>
-      <p class="text-slate-600">Editável via dados em JS • Pronto para GitHub Pages</p>
+  <!-- RODAPÉ -->
+  <footer class="bg-white border-t border-slate-200 py-4 mt-auto">
+    <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-500">
+      <p>© LABORE — Laboratório de Reservatórios de Petróleo | Faculdade de Engenharia Mecânica (FEM) - UNICAMP</p>
     </div>
   </footer>
 
-  <!-- Modal de Imagem Ampliada (LightBox) -->
-  <div id="image-modal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm" onclick="closeImageModal()">
-    <div class="relative max-w-4xl w-full bg-slate-900 rounded-2xl border border-slate-800 p-2 overflow-hidden" onclick="event.stopPropagation()">
-      <button onclick="closeImageModal()" class="absolute top-4 right-4 z-10 p-2 rounded-full bg-slate-800/80 text-white hover:bg-slate-700 transition-colors">
-        <i data-lucide="x" class="w-5 h-5"></i>
-      </button>
-      <img id="modal-image-src" src="" alt="Imagem Ampliada" class="w-full h-auto max-h-[80vh] object-contain rounded-xl">
-      <p id="modal-image-caption" class="p-3 text-center text-xs text-slate-400 font-mono"></p>
-    </div>
-  </div>
-
-  <!-- ESTRUTURA DE DADOS EDITÁVEL E LÓGICA DA APLICAÇÃO -->
+  <!-- SCRIPTS E INTERATIVIDADE -->
   <script>
-    /**
-     * BANCO DE DADOS DAS INSTRUÇÕES DE TRABALHO (ITs)
-     * Para editar ou adicionar procedimentos, modifique a estrutura abaixo!
-     * As imagens podem apontar para arquivos locais no seu repositório GitHub (ex: './images/passo1.png')
-     */
-    const workInstructions = [
-      {
-        id: "it-operacao-dano",
-        title: "Instrução de Operação da Bancada de Dano",
-        code: "IT-LAB-001",
-        version: "0.1",
-        date: "14 de outubro de 2026",
-        authors: [
-          "Danilo Augusto dos Santos Martinez Garcia",
-          "Rubens Coutinho Toledo",
-          "Thiago Henrique Cassanelli de Oliveira dos Santos"
-        ],
-        description: "Procedimento completo de operação com fluxo reverso, fluxo direto, injeção de fluido de dano e flush.",
-        category: "Operação",
-        steps: [
-          {
-            id: "step-0",
-            number: 0,
-            title: "Expectativas Iniciais & Verificação Previa",
-            type: "prerequisite",
-            status: "Condição Inicial",
-            summary: "Verificar se a bancada foi adequadamente montada e se não existem vazamentos.",
-            parameters: [
-              { label: "Bancada", value: "Montada conforme procedimento" },
-              { label: "Estanqueidade", value: "Sem vazamentos detectados" }
-            ],
-            checklist: [
-              "Verificar estanqueidade de conexões e tubulações.",
-              "Certificar-se de que todos os sensores do LabVIEW respondem.",
-              "Obter o volume poroso da amostra no arquivo síntese ou com o responsável."
-            ],
-            image: "./images/bancada-geral-placeholder.png",
-            imageCaption: "Amostra/Bancada pronta para operação",
-            labviewButtons: []
-          },
-          {
-            id: "step-1",
-            number: 1,
-            title: "Primeiro Fluxo Reverso",
-            type: "process",
-            status: "Etapa 1",
-            summary: "Acionamento da bomba via computador em fluxo reverso (1 ml/min e 1.5 ml/min).",
-            parameters: [
-              { label: "Vazões", value: "1.0 ml/min e 1.5 ml/min" },
-              { label: "Volume Poroso", value: "3 VP para cada vazão" },
-              { label: "Botão LabVIEW", value: "REV" }
-            ],
-            checklist: [
-              "1. Verificar o volume poroso da amostra no arquivo síntese ou com o responsável.",
-              "2. Apertar o botão 'REV' no canto superior esquerdo do LabVIEW.",
-              "3. Ajustar a vazão a 1 ml/min e aguardar que a pressão total esteja equilibrada no painel do LabVIEW.",
-              "4. Parar a bomba, aguardar a estabilização da pressão e abrir a válvula de equalização da pressão.",
-              "5. Após equalização, fechar a válvula e apertar o botão CLEAR no LabVIEW e depois SET. Clique em 'sim' ou 'okay', até que a pressão fique perto do valor zero. Ligue novamente a bomba.",
-              "6. Após a estabilização da pressão, começar a fazer a gravação e aguarde 3 volumes porosos na vazão de 1 ml/min.",
-              "7. Mude para vazão de 1.5 ml/min e aguarde mais 3 volumes porosos.",
-              "8. Clique no botão 'GRAVAÇÃO' para encerrar o LabVIEW e end datalog no software da bomba."
-            ],
-            gravaçãoInfo: "Ajustar o número de dados no canto inferior direito para 5. Criar pasta com o nome da amostra no diretório. No Quizix: Set up datalog > mude o nome do arquivo > OK. No LabVIEW: apertar TARA e depois GRAVAÇÃO.",
-            image: "./images/labview-fluxo-reverso.png",
-            imageCaption: "Painel do LabVIEW no modo REV com parâmetros ajustados",
-            labviewButtons: ["REV", "CLEAR", "SET", "TARA", "GRAVAÇÃO"]
-          },
-          {
-            id: "step-2",
-            number: 2,
-            title: "Primeiro Fluxo Direto",
-            type: "process",
-            status: "Etapa 2",
-            summary: "Repetir o procedimento do fluxo reverso alterando a direção para DIR no LabVIEW.",
-            parameters: [
-              { label: "Vazões", value: "1.0 ml/min e 1.5 ml/min" },
-              { label: "Volume Poroso", value: "3 VP para cada vazão" },
-              { label: "Botão LabVIEW", value: "DIR" }
-            ],
-            checklist: [
-              "1. Repetir todos os procedimentos da etapa anterior.",
-              "2. Alterar somente o botão no LabVIEW de 'REV' para 'DIR'.",
-              "3. Executar o ciclo de gravação para 3 VP em 1 ml/min e 3 VP em 1.5 ml/min."
-            ],
-            image: "./images/labview-fluxo-direto.png",
-            imageCaption: "Inversão de fluxo no LabVIEW selecionando DIR",
-            labviewButtons: ["DIR", "CLEAR", "SET", "TARA", "GRAVAÇÃO"]
-          },
-          {
-            id: "step-3",
-            number: 3,
-            title: "Injeção do Dano",
-            type: "critical",
-            status: "Etapa 3 - Crítica",
-            summary: "Injeção do fluido de dano em pressão constante durante exatamente 2 horas.",
-            parameters: [
-              { label: "Modo Bomba", value: "Constant Pressure Delivery" },
-              { label: "Pressão Trabalhada", value: "1000 + Overbalance (Psi)" },
-              { label: "Duração Exata", value: "2 Horas" },
-              { label: "Botão LabVIEW", value: "FD" }
-            ],
-            checklist: [
-              "1. Parar a bomba e apertar 'CLEAR' no LabVIEW.",
-              "2. Manualmente apertar na válvula que comunica com a garrafa de dano, e com a bomba em vazão constante faça a sangria da bomba.",
-              "3. Pare a bomba, feche a válvula da tubulação do dano e altere a bomba para pressão constante (Constant pressure delivery).",
-              "4. Configure a pressão de trabalho do ensaio (1000 + pressão de trabalho/overbalance).",
-              "5. Após a bomba estabilizar na pressão, inicie a gravação conforme etapas anteriores.",
-              "6. Aperte o botão 'FD' no LabVIEW e então abra a válvula da linha do dano no sentido do experimento.",
-              "7. O ensaio de dano tem duração EXATA de 2h.",
-              "8. Após o ensaio, pare a gravação e então pare a bomba."
-            ],
-            image: "./images/injecao-dano-painel.png",
-            imageCaption: "Ajuste do modo Constant Pressure Delivery na Bomba Quizix e acionamento FD",
-            labviewButtons: ["CLEAR", "FD", "GRAVAÇÃO"]
-          },
-          {
-            id: "step-4",
-            number: 4,
-            title: "Flush (Limpeza do Sistema)",
-            type: "process",
-            status: "Etapa 4",
-            summary: "Retirada do fluido de dano e ciclos de lavagem até efluente límpido.",
-            parameters: [
-              { label: "Modo Bomba", value: "Constant Rate Delivery" },
-              { label: "Pressão Mínima", value: "Não deixar cair de 700 Psi" },
-              { label: "Retomada Pressão", value: "Aproximadamente 900 Psi" }
-            ],
-            checklist: [
-              "1. Mude a bomba para vazão constante (constant rate delivery).",
-              "2. Retire a pressão do cilindro de dano abrindo a válvula para o sentido da atmosfera.",
-              "3. Desmonte a linha do cilindro.",
-              "4. Com o auxílio de um becker, COM CUIDADO abra vagarosamente a linha do ensaio para que o fluido de dano saia do sistema e colete no becker. NÃO deixar a pressão cair abaixo dos 700 Psi.",
-              "5. Aperte o botão 'REV' no LabVIEW e aguarde a pressão retomar próximo dos 900 Psi e repita o processo de flush.",
-              "6. Repita os passos anteriores até que o líquido coletado no becker seja LÍMPIDO e livre de sólidos."
-            ],
-            image: "./images/flush-becker.png",
-            imageCaption: "Coleta do efluente no becker mantendo pressão superior a 700 Psi",
-            labviewButtons: ["REV"]
-          },
-          {
-            id: "step-5",
-            number: 5,
-            title: "Fluxo Reverso Final",
-            type: "final",
-            status: "Etapa 5 - Finalização",
-            summary: "Limpeza da back pressure e avaliação final com 10 volumes porosos.",
-            parameters: [
-              { label: "Vazão", value: "1.5 ml/min" },
-              { label: "Volume Poroso", value: "10 VP" },
-              { label: "Botão LabVIEW", value: "REV" }
-            ],
-            checklist: [
-              "1. Pare a bomba, aperte 'CLEAR' no LabVIEW e faça a limpeza da back pressure.",
-              "2. Após remontado, aperte em 'REV' na vazão de 1.5 ml/min.",
-              "3. Após estabilizar a pressão, comece a gravação e aguarde exatamente 10 volumes porosos.",
-              "4. Finalize o datalogging no LabVIEW e no software Quizix."
-            ],
-            image: "./images/fluxo-reverso-final.png",
-            imageCaption: "Finalização do ensaio e salvamento dos arquivos síntese",
-            labviewButtons: ["CLEAR", "REV", "GRAVAÇÃO"]
-          }
-        ]
-      },
-      {
-        id: "it-montagem-bancada",
-        title: "Instrução de Montagem da Bancada de Dano",
-        code: "IT-LAB-002",
-        version: "0.1",
-        date: "14 de outubro de 2026",
-        authors: [
-          "Danilo Augusto dos Santos Martinez Garcia",
-          "Rubens Coutinho Toledo",
-          "Thiago Henrique Cassanelli de Oliveira dos Santos"
-        ],
-        description: "Procedimento físico de montagem de conexões, posicionamento da amostra de rocha e alinhamento de transdutores.",
-        category: "Montagem",
-        steps: [
-          {
-            id: "step-m1",
-            number: 1,
-            title: "Preparação dos Componentes e Amostra",
-            type: "prerequisite",
-            status: "Passo 1",
-            summary: "Verificação de conectores, gaxetas, selos e posicionamento do testemunho no acoplador.",
-            parameters: [
-              { label: "Inspeção", value: "Anéis O-ring sem fissuras" },
-              { label: "Torque", value: "Chave dinamométrica aferida" }
-            ],
-            checklist: [
-              "Inspecionar O-rings e superfícies de vedação da célula hidrostática.",
-              "Medir o comprimento e diâmetro exato do plugue de rocha.",
-              "Montar a manga de camisa elastomérica envolvendo a amostra."
-            ],
-            image: "./images/montagem-amostra.png",
-            imageCaption: "Montagem da amostra na camisa de borracha",
-            labviewButtons: []
-          },
-          {
-            id: "step-m2",
-            number: 2,
-            title: "Conexão das Linhas Hidráulicas e Transdutores",
-            type: "process",
-            status: "Passo 2",
-            summary: "Acoplamento das linhas de entrada, saída, pressão confinante e transdutores diferenciais.",
-            parameters: [
-              { label: "Fluido Confinante", value: "Óleo mineral / Água" },
-              { label: "Pressão Confinamento", value: "Checar alívio" }
-            ],
-            checklist: [
-              "Conectar as tubulações de inox 1/8\" e 1/16\" com aperto adequado.",
-              "Conectar cabos de sinal dos transdutores de pressão de entrada/saída no DAQ LabVIEW.",
-              "Realizar pressurização prévia de estanqueidade até 500 Psi."
-            ],
-            image: "./images/montagem-tubulacao.png",
-            imageCaption: "Linhas hidráulicas conectadas à célula de ensaio",
-            labviewButtons: []
-          }
-        ]
-      }
-    ];
+    // Inicialização dos ícones Lucide
+    lucide.createIcons();
 
-    // Estado da Aplicação
-    let activeIT = null;
-    let selectedStepId = null;
+    // Alternância de Telas (Home x Detalhe)
+    function showView(viewName) {
+      const homeView = document.getElementById('view-home');
+      const detailView = document.getElementById('view-detail');
 
-    // Inicialização da Aplicação
-    window.onload = function() {
-      lucide.createIcons();
-      renderHubCards(workInstructions);
-    };
-
-    // Navegação entre Views (Hub x Detalhes da IT)
-    function navigateTo(view, itId = null) {
-      const viewHub = document.getElementById('view-hub');
-      const viewIT = document.getElementById('view-it-detail');
-
-      if (view === 'hub') {
-        viewHub.classList.remove('hidden');
-        viewIT.classList.add('hidden');
+      if (viewName === 'detail') {
+        homeView.classList.add('hidden');
+        detailView.classList.remove('hidden');
         window.scrollTo({ top: 0, behavior: 'smooth' });
-      } else if (view === 'detail' && itId) {
-        activeIT = workInstructions.find(it => it.id === itId);
-        if (!activeIT) return;
-
-        renderITDetail(activeIT);
-        viewHub.classList.add('hidden');
-        viewIT.classList.remove('hidden');
+      } else {
+        detailView.classList.add('hidden');
+        homeView.classList.remove('hidden');
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     }
 
-    // Renderiza os cartões na Central/Hub de ITs
-    function renderHubCards(instructions) {
-      const grid = document.getElementById('it-cards-grid');
-      grid.innerHTML = '';
-
-      instructions.forEach(it => {
-        const card = document.createElement('div');
-        card.className = "bg-slate-900 border border-slate-800 hover:border-sky-500/50 rounded-2xl p-6 transition-all duration-200 hover:shadow-xl hover:shadow-sky-500/5 flex flex-col justify-between space-y-4 group cursor-pointer";
-        card.onclick = () => navigateTo('detail', it.id);
-
-        card.innerHTML = `
-          <div class="space-y-3">
-            <div class="flex items-center justify-between">
-              <span class="px-2.5 py-1 rounded-md text-xs font-semibold bg-sky-500/10 text-sky-400 border border-sky-500/20">
-                ${it.code}
-              </span>
-              <span class="text-xs text-slate-500 font-mono">v${it.version}</span>
-            </div>
-
-            <h3 class="text-lg font-bold text-white group-hover:text-sky-400 transition-colors">
-              ${it.title}
-            </h3>
-
-            <p class="text-xs text-slate-400 line-clamp-2 leading-relaxed">
-              ${it.description}
-            </p>
-          </div>
-
-          <div class="pt-4 border-t border-slate-800/80 space-y-3">
-            <div class="flex flex-wrap gap-2 text-[11px] text-slate-400">
-              <span class="inline-flex items-center gap-1">
-                <i data-lucide="layers" class="w-3.5 h-3.5 text-slate-500"></i>
-                ${it.steps.length} Etapas
-              </span>
-              <span>•</span>
-              <span class="inline-flex items-center gap-1">
-                <i data-lucide="calendar" class="w-3.5 h-3.5 text-slate-500"></i>
-                ${it.date}
-              </span>
-            </div>
-
-            <div class="text-[11px] text-slate-500 truncate">
-              <strong>Autores:</strong> ${it.authors.join(', ')}
-            </div>
-
-            <button class="w-full mt-2 py-2 rounded-xl bg-slate-800 group-hover:bg-sky-600 text-slate-200 group-hover:text-white text-xs font-medium transition-all flex items-center justify-center gap-2">
-              <span>Abrir Fluxograma</span>
-              <i data-lucide="arrow-right" class="w-4 h-4"></i>
-            </button>
-          </div>
-        `;
-
-        grid.appendChild(card);
-      });
-
-      lucide.createIcons();
-    }
-
-    // Filtro de Busca no Hub
-    function filterITs() {
-      const term = document.getElementById('search-input').value.toLowerCase();
-      const filtered = workInstructions.filter(it => 
-        it.title.toLowerCase().includes(term) ||
-        it.description.toLowerCase().includes(term) ||
-        it.code.toLowerCase().includes(term) ||
-        it.authors.some(a => a.toLowerCase().includes(term))
-      );
-      renderHubCards(filtered);
-    }
-
-    // Renderiza o detalhe completo da IT e seu fluxograma
-    function renderITDetail(it) {
-      document.getElementById('it-detail-title').innerText = `${it.code} - ${it.title}`;
-      document.getElementById('it-detail-meta').innerText = `Elaborado por: ${it.authors.join('; ')} | Data: ${it.date} | Versão: ${it.version}`;
-
-      const container = document.getElementById('flowchart-container');
-      container.innerHTML = '';
-
-      it.steps.forEach((step, index) => {
-        const stepCard = document.createElement('div');
-        stepCard.id = `flow-step-card-${step.id}`;
-        
-        // Estilização baseada na tipologia da etapa
-        let badgeBg = "bg-slate-800 text-slate-300 border-slate-700";
-        let nodeIcon = "play-circle";
-        if (step.type === "prerequisite") { badgeBg = "bg-amber-500/10 text-amber-400 border-amber-500/30"; nodeIcon = "check-circle-2"; }
-        if (step.type === "critical") { badgeBg = "bg-red-500/10 text-red-400 border-red-500/30"; nodeIcon = "alert-triangle"; }
-        if (step.type === "final") { badgeBg = "bg-emerald-500/10 text-emerald-400 border-emerald-500/30"; nodeIcon = "flag"; }
-
-        const isLast = index === it.steps.length - 1;
-
-        stepCard.className = `relative p-4 rounded-xl border transition-all cursor-pointer ${
-          selectedStepId === step.id 
-            ? 'bg-slate-800/90 border-sky-500 shadow-lg shadow-sky-500/10' 
-            : 'bg-slate-950/60 border-slate-800 hover:border-slate-700 hover:bg-slate-800/40'
-        }`;
-
-        stepCard.onclick = () => selectStep(step.id);
-
-        stepCard.innerHTML = `
-          <div class="flex items-start justify-between gap-3">
-            <div class="flex items-center gap-3">
-              <div class="w-8 h-8 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center font-bold text-xs text-sky-400 shrink-0">
-                ${step.number}
-              </div>
-              <div>
-                <span class="px-2 py-0.5 rounded text-[10px] font-semibold border ${badgeBg} inline-block mb-1">
-                  ${step.status}
-                </span>
-                <h4 class="text-sm font-bold text-white">${step.title}</h4>
-              </div>
-            </div>
-            <i data-lucide="${nodeIcon}" class="w-4 h-4 text-slate-500 shrink-0 mt-1"></i>
-          </div>
-
-          <p class="text-xs text-slate-400 mt-2 leading-relaxed">
-            ${step.summary}
-          </p>
-
-          <!-- Parâmetros Rápidos -->
-          ${step.parameters ? `
-            <div class="mt-3 flex flex-wrap gap-2">
-              ${step.parameters.map(p => `
-                <span class="px-2 py-1 rounded bg-slate-900 border border-slate-800 text-[10px] text-slate-300">
-                  <strong class="text-slate-400">${p.label}:</strong> ${p.value}
-                </span>
-              `).join('')}
-            </div>
-          ` : ''}
-
-          <!-- Setas de Conexão entre blocos -->
-          ${!isLast ? `
-            <div class="flex justify-center my-2 text-slate-600">
-              <i data-lucide="arrow-down" class="w-5 h-5 animate-pulse text-sky-500/70"></i>
-            </div>
-          ` : ''}
-        `;
-
-        container.appendChild(stepCard);
-      });
-
-      // Seleciona o primeiro passo por padrão
-      if (it.steps.length > 0) {
-        selectStep(it.steps[0].id);
+    // Toggle para o Checklist Passo a Passo
+    function toggleStep(element) {
+      element.classList.toggle('completed');
+      const icon = element.querySelector('.checkbox-box i');
+      if (element.classList.contains('completed')) {
+        icon.classList.remove('opacity-0');
+      } else {
+        icon.classList.add('opacity-0');
       }
-
-      lucide.createIcons();
     }
 
-    // Seleciona a etapa e atualiza o Painel Lateral
-    function selectStep(stepId) {
-      if (!activeIT) return;
-      selectedStepId = stepId;
+    // Controle do Carrossel de Imagens
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.carousel-slide');
+    const dots = document.querySelectorAll('.carousel-dot');
+    const indicator = document.getElementById('carousel-indicator');
 
-      // Destaque visual no card selecionado
-      activeIT.steps.forEach(s => {
-        const el = document.getElementById(`flow-step-card-${s.id}`);
-        if (el) {
-          if (s.id === stepId) {
-            el.classList.add('bg-slate-800/90', 'border-sky-500', 'shadow-lg', 'shadow-sky-500/10');
-            el.classList.remove('bg-slate-950/60', 'border-slate-800');
-          } else {
-            el.classList.remove('bg-slate-800/90', 'border-sky-500', 'shadow-lg', 'shadow-sky-500/10');
-            el.classList.add('bg-slate-950/60', 'border-slate-800');
-          }
+    function updateCarousel() {
+      slides.forEach((slide, index) => {
+        if (index === currentSlide) {
+          slide.classList.add('active');
+        } else {
+          slide.classList.remove('active');
         }
       });
 
-      const step = activeIT.steps.find(s => s.id === stepId);
-      if (!step) return;
+      dots.forEach((dot, index) => {
+        if (index === currentSlide) {
+          dot.classList.remove('bg-slate-300');
+          dot.classList.add('bg-labore-navy');
+        } else {
+          dot.classList.remove('bg-labore-navy');
+          dot.classList.add('bg-slate-300');
+        }
+      });
 
-      const detailContent = document.getElementById('step-detail-content');
-      document.getElementById('selected-step-badge').innerText = `Etapa ${step.number}`;
-
-      detailContent.innerHTML = `
-        <div class="space-y-4">
-          <!-- Título e Descrição -->
-          <div>
-            <h4 class="text-base font-bold text-white">${step.title}</h4>
-            <p class="text-xs text-slate-400 mt-1">${step.summary}</p>
-          </div>
-
-          <!-- Botões virtuais interativos do LabVIEW caso existam -->
-          ${step.labviewButtons && step.labviewButtons.length > 0 ? `
-            <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-2">
-              <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block">
-                Botões a interagir no LabVIEW / Bomba:
-              </span>
-              <div class="flex flex-wrap gap-2">
-                ${step.labviewButtons.map(btn => `
-                  <button class="px-3 py-1.5 rounded-lg bg-sky-600/20 text-sky-300 border border-sky-500/40 text-xs font-bold tracking-wider hover:bg-sky-500 hover:text-white transition-all shadow-sm">
-                    ${btn}
-                  </button>
-                `).join('')}
-              </div>
-            </div>
-          ` : ''}
-
-          <!-- Checklist passo a passo -->
-          <div class="space-y-2">
-            <span class="text-xs font-semibold text-slate-300 block">Procedimento Detalhado:</span>
-            <ul class="space-y-2">
-              ${step.checklist.map(item => `
-                <li class="text-xs text-slate-300 flex items-start gap-2 bg-slate-950/50 p-2.5 rounded-lg border border-slate-800/80">
-                  <i data-lucide="check-square" class="w-4 h-4 text-emerald-400 shrink-0 mt-0.5"></i>
-                  <span>${item}</span>
-                </li>
-              `).join('')}
-            </ul>
-          </div>
-
-          <!-- Observação de Gravação / Quizix se houver -->
-          ${step.gravaçãoInfo ? `
-            <div class="p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl space-y-1">
-              <span class="text-xs font-bold text-amber-400 flex items-center gap-1.5">
-                <i data-lucide="info" class="w-3.5 h-3.5"></i>
-                Como realizar a Gravação e Datalogging:
-              </span>
-              <p class="text-[11px] text-amber-200/90 leading-relaxed">${step.gravaçãoInfo}</p>
-            </div>
-          ` : ''}
-
-          <!-- Placeholder para Imagem do Passo -->
-          <div class="space-y-1.5 pt-2">
-            <span class="text-xs font-semibold text-slate-300 block">Registro Visual / Captura de Tela:</span>
-            <div class="relative group bg-slate-950 border-2 border-dashed border-slate-800 hover:border-sky-500/50 rounded-xl p-4 text-center cursor-pointer transition-all" onclick="openImageModal('${step.image}', '${step.imageCaption || step.title}')">
-              
-              <!-- Placeholder gráfico e dinâmico caso imagem não exista -->
-              <img src="${step.image}" alt="${step.title}" class="w-full h-44 object-cover rounded-lg shadow-md mb-2 bg-slate-900" onerror="this.onerror=null; this.src='https://placehold.co/600x350/0f172a/38bdf8?text=Sua+Imagem/Print+Aqui\\n(${step.image})';">
-              
-              <div class="text-[11px] text-slate-400 flex items-center justify-center gap-1 font-mono">
-                <i data-lucide="image" class="w-3.5 h-3.5 text-sky-400"></i>
-                <span>${step.imageCaption || 'Clique para ampliar imagem'}</span>
-              </div>
-              <p class="text-[10px] text-slate-500 mt-1">Caminho editável no arquivo JS: <code class="text-sky-400">${step.image}</code></p>
-            </div>
-          </div>
-        </div>
-      `;
-
-      lucide.createIcons();
+      if (indicator) {
+        indicator.textContent = `${currentSlide + 1} / ${slides.length}`;
+      }
     }
 
-    // Lightbox / Modal de Imagem Ampliada
-    function openImageModal(src, caption) {
-      const modal = document.getElementById('image-modal');
-      const modalImg = document.getElementById('modal-image-src');
-      const modalCap = document.getElementById('modal-image-caption');
-
-      modalImg.src = src;
-      modalImg.onerror = function() {
-        this.src = `https://placehold.co/800x500/0f172a/38bdf8?text=Placeholder+de+Imagem\\n${encodeURIComponent(caption)}`;
-      };
-      modalCap.innerText = caption;
-
-      modal.classList.remove('hidden');
+    function nextSlide() {
+      currentSlide = (currentSlide + 1) % slides.length;
+      updateCarousel();
     }
 
-    function closeImageModal() {
-      document.getElementById('image-modal').classList.add('hidden');
+    function prevSlide() {
+      currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+      updateCarousel();
     }
 
-    // Função de Expandir Todos os Detalhes (Visualização completa)
-    function expandAllSteps() {
-      if (!activeIT) return;
-      alert(`Visualização expandida ativada para todas as ${activeIT.steps.length} etapas! Você pode rolar pela coluna esquerda do fluxograma e clicar em cada uma para trocar o painel instantaneamente.`);
-    }
-
-    // Função de Impressão da IT
-    function printIT() {
-      window.print();
+    function goToSlide(index) {
+      currentSlide = index;
+      updateCarousel();
     }
   </script>
 </body>
