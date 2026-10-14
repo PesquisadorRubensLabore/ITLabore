@@ -5,8 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LABORE UNICAMP - Instruções de Trabalho</title>
   <style>
+    /* VARIABLES DE DESIGN (PALETA DE CORES LABORE / UNICAMP) */
     :root {
-      --primary-color: #002B49;      /* Azul Petróleo / Noturno UNICAMP */
+      --primary-color: #002B49;      /* Azul Petróleo Profundo */
       --secondary-color: #C8102E;    /* Vermelho UNICAMP / Terracota */
       --secondary-hover: #A6192E;
       --bg-color: #F4F6F9;           /* Cinza Métrico Industrial */
@@ -50,6 +51,7 @@
       display: flex;
       align-items: center;
       gap: 1rem;
+      cursor: pointer;
     }
 
     .brand-logo {
@@ -62,8 +64,9 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.2rem;
+      font-size: 1.3rem;
       letter-spacing: 1px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     }
 
     .brand-text h1 {
@@ -92,7 +95,7 @@
     }
 
     .nav-btn:hover {
-      background-color: rgba(255,255,255,0.1);
+      background-color: rgba(255,255,255,0.15);
       border-color: white;
     }
 
@@ -105,7 +108,7 @@
       padding: 0 1.5rem;
     }
 
-    /* VISÃO 1: HUB / PÁGINA PRINCIPAL */
+    /* VISÃO 1: HUB PRINCIPAL */
     #hub-view {
       display: block;
     }
@@ -129,6 +132,8 @@
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
       gap: 1.5rem;
+      max-width: 800px;
+      margin: 0 auto;
     }
 
     .it-card {
@@ -136,8 +141,8 @@
       border-radius: 10px;
       border: 1px solid var(--border-color);
       box-shadow: var(--box-shadow);
-      padding: 1.5rem;
-      transition: transform 0.2s, box-shadow 0.2s;
+      padding: 1.75rem;
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -163,9 +168,10 @@
     }
 
     .it-card h3 {
-      font-size: 1.25rem;
+      font-size: 1.3rem;
       color: var(--primary-color);
       margin-bottom: 0.75rem;
+      line-height: 1.3;
     }
 
     .it-card p {
@@ -184,7 +190,7 @@
       justify-content: space-between;
     }
 
-    /* VISÃO 2: SUBPÁGINA / FLUXOGRAMA DETALHADO */
+    /* VISÃO 2: SUBPÁGINA FLUXOGRAMA DETALHADO */
     #detail-view {
       display: none;
     }
@@ -218,7 +224,7 @@
       background-color: var(--secondary-color);
       color: white;
       text-decoration: none;
-      padding: 0.6rem 1.2rem;
+      padding: 0.65rem 1.25rem;
       border-radius: 6px;
       font-weight: 600;
       font-size: 0.9rem;
@@ -226,6 +232,7 @@
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
+      box-shadow: 0 2px 5px rgba(200, 16, 46, 0.2);
     }
 
     .btn-download:hover {
@@ -244,7 +251,7 @@
     }
 
     .flowchart-title {
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       font-weight: 700;
       color: var(--text-muted);
       text-transform: uppercase;
@@ -255,7 +262,7 @@
     .flowchart-steps {
       display: flex;
       align-items: center;
-      min-width: 750px;
+      min-width: 850px;
       gap: 0.5rem;
     }
 
@@ -264,7 +271,719 @@
       background-color: var(--bg-color);
       border: 2px solid var(--border-color);
       border-radius: 8px;
-      padding: 1rem 0.75rem;
+      padding: 0.9rem 0.6rem;
       text-align: center;
       cursor: pointer;
-      transition: all 0
+      transition: all 0.2s;
+      position: relative;
+    }
+
+    .flow-node:hover {
+      border-color: var(--primary-color);
+      background-color: #FFFFFF;
+    }
+
+    .flow-node.active {
+      background-color: var(--primary-color);
+      color: white;
+      border-color: var(--primary-color);
+      box-shadow: 0 4px 12px rgba(0, 43, 73, 0.25);
+    }
+
+    .flow-node-num {
+      font-size: 0.7rem;
+      font-weight: 700;
+      opacity: 0.8;
+      margin-bottom: 0.2rem;
+      text-transform: uppercase;
+    }
+
+    .flow-node.active .flow-node-num {
+      opacity: 0.9;
+    }
+
+    .flow-node-title {
+      font-size: 0.82rem;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+
+    .flow-arrow {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      font-weight: bold;
+      user-select: none;
+    }
+
+    /* PAINEL DE CONTEÚDO E CARROSSEL */
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 950px) {
+      .detail-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .detail-content {
+      background-color: var(--card-bg);
+      border-radius: 10px;
+      padding: 1.5rem;
+      border: 1px solid var(--border-color);
+      box-shadow: var(--box-shadow);
+    }
+
+    .step-header-detail {
+      border-bottom: 2px solid var(--bg-color);
+      padding-bottom: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .step-header-detail h3 {
+      color: var(--primary-color);
+      font-size: 1.3rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .step-header-detail p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+
+    /* LISTA CHECKLIST INTERATIVA */
+    .checklist {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .check-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.85rem;
+      padding: 0.9rem;
+      border-radius: 8px;
+      background-color: var(--bg-color);
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .check-item:hover {
+      border-color: #CBD5E1;
+      background-color: #EDF2F7;
+    }
+
+    .check-item.completed {
+      background-color: var(--accent-green-bg);
+      border-color: #A3E635;
+    }
+
+    .check-box {
+      width: 22px;
+      height: 22px;
+      border-radius: 4px;
+      border: 2px solid var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+      background-color: white;
+      font-size: 0.8rem;
+      font-weight: bold;
+      color: transparent;
+      transition: all 0.2s;
+    }
+
+    .check-item.completed .check-box {
+      background-color: var(--accent-green);
+      border-color: var(--accent-green);
+      color: white;
+    }
+
+    .check-text {
+      font-size: 0.92rem;
+      line-height: 1.45;
+      color: var(--text-main);
+    }
+
+    .check-item.completed .check-text {
+      color: #166534;
+      text-decoration: line-through;
+      opacity: 0.85;
+    }
+
+    /* BOTÕES DO LABVIEW E QUIZIX STYLED TAGS */
+    .labview-btn-tag {
+      display: inline-block;
+      background-color: #334155;
+      color: #F8FAFC;
+      font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+      font-weight: 700;
+      font-size: 0.78rem;
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      border: 1px solid #1E293B;
+      margin: 0 0.2rem;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+
+    /* CARROSSEL DE IMAGENS */
+    .carousel-panel {
+      background-color: var(--card-bg);
+      border-radius: 10px;
+      padding: 1.5rem;
+      border: 1px solid var(--border-color);
+      box-shadow: var(--box-shadow);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .carousel-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--primary-color);
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .carousel-container {
+      position: relative;
+      width: 100%;
+      border-radius: 8px;
+      overflow: hidden;
+      background-color: #0F172A;
+      aspect-ratio: 4/3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .carousel-slide {
+      width: 100%;
+      height: 100%;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .carousel-slide.active {
+      display: flex;
+    }
+
+    .carousel-slide svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .carousel-control {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0, 0, 0, 0.6);
+      color: white;
+      border: none;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      transition: background 0.2s;
+      z-index: 10;
+    }
+
+    .carousel-control:hover {
+      background: rgba(0, 0, 0, 0.85);
+    }
+
+    .carousel-prev { left: 8px; }
+    .carousel-next { right: 8px; }
+
+    .carousel-caption {
+      margin-top: 0.85rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-align: center;
+      min-height: 2.5rem;
+      line-height: 1.35;
+    }
+
+    .carousel-indicators {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 0.75rem;
+    }
+
+    .indicator {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: #CBD5E1;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .indicator.active {
+      background-color: var(--secondary-color);
+      width: 22px;
+      border-radius: 4px;
+    }
+
+    /* FOOTER */
+    footer {
+      background-color: var(--primary-color);
+      color: white;
+      text-align: center;
+      padding: 1.25rem;
+      font-size: 0.85rem;
+      margin-top: auto;
+      border-top: 3px solid var(--secondary-color);
+    }
+
+    footer p {
+      opacity: 0.85;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="brand" onclick="showHub()">
+      <div class="brand-logo">L</div>
+      <div class="brand-text">
+        <h1>LABORE - UNICAMP</h1>
+        <p>Laboratório de Reservatórios de Petróleo</p>
+      </div>
+    </div>
+    <button id="btn-home" class="nav-btn" style="display: none;" onclick="showHub()">
+      ← Voltar às Instruções
+    </button>
+  </header>
+
+  <!-- CONTEÚDO PRINCIPAL -->
+  <main>
+
+    <!-- HUB PRINCIPAL (#hub-view) -->
+    <section id="hub-view">
+      <div class="hub-header">
+        <h2>Instruções de Trabalho (IT)</h2>
+        <p>Selecione o procedimento operacional para visualizar o fluxograma interativo e checklist de execução</p>
+      </div>
+
+      <div class="grid-container">
+        <!-- Cartão da IT Unificada -->
+        <div class="it-card" onclick="openIT('bancada-dano')">
+          <div>
+            <span class="it-card-tag">Bancada Experimental</span>
+            <h3>Montagem e Operação da Bancada de Dano à Formação</h3>
+            <p>Procedimento operacional completo contendo as expectativas prévias, primeiro fluxo reverso, fluxo direto, injeção de dano, flush e fluxo reverso final.</p>
+          </div>
+          <div class="it-card-meta">
+            <span>Versão: 0.1</span>
+            <span>Data: 14/10/2026</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SUBPÁGINA DETALHADA (#detail-view) -->
+    <section id="detail-view">
+      
+      <!-- Cabeçalho da IT -->
+      <div class="subpage-header">
+        <div class="subpage-info">
+          <h2 id="it-title">Instrução de Montagem e Operação - Bancada de Dano</h2>
+          <p id="it-meta">Elaborado por: Danilo Garcia, Rubens Toledo, Thiago Santos • Versão 0.1</p>
+        </div>
+        <a href="./documents/Instrucao_bancada_dano.pdf" target="_blank" class="btn-download">
+          📄 Download da IT (PDF)
+        </a>
+      </div>
+
+      <!-- Fluxograma Horizontal Interativo -->
+      <div class="flowchart-wrapper">
+        <div class="flowchart-title">Fluxograma do Procedimento (Clique nas etapas para navegar)</div>
+        <div id="flowchart-nodes" class="flowchart-steps">
+          <!-- Gerado via JS -->
+        </div>
+      </div>
+
+      <!-- Painel de Detalhes e Carrossel -->
+      <div class="detail-grid">
+        
+        <!-- Checklist Interativo -->
+        <div class="detail-content">
+          <div class="step-header-detail">
+            <h3 id="step-title">1. Expectativas Prévias</h3>
+            <p id="step-desc">Condições necessárias antes de iniciar os fluxos no sistema.</p>
+          </div>
+
+          <h4 style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">
+            Passos da Etapa (Clique no item para marcar como concluído):
+          </h4>
+          
+          <ul id="checklist-container" class="checklist">
+            <!-- Checklist Gerada via JS -->
+          </ul>
+        </div>
+
+        <!-- Carrossel de Imagens Lateral -->
+        <div class="carousel-panel">
+          <div class="carousel-title">Visualização / Screenshots</div>
+          <div class="carousel-container" id="carousel-slides-container">
+            <!-- Slides SVG Inline Gerados via JS -->
+            <button class="carousel-control carousel-prev" onclick="changeSlide(-1)">❮</button>
+            <button class="carousel-control carousel-next" onclick="changeSlide(1)">❯</button>
+          </div>
+          <div id="carousel-caption" class="carousel-caption">Esquema ilustrativo.</div>
+          <div id="carousel-indicators" class="carousel-indicators">
+            <!-- Indicadores Gerados via JS -->
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>LABORE UNICAMP — Laboratório de Reservatórios de Petróleo © 2026</p>
+  </footer>
+
+  <!-- SCRIPT DE INTERATIVIDADE E DADOS -->
+  <script>
+    // Estrutura de dados das etapas
+    const itData = {
+      title: "Instrução de Montagem e Operação - Bancada de Dano",
+      authors: "Danilo Augusto dos Santos Martinez Garcia, Rubens Coutinho Toledo, Thiago Henrique Cassanelli de Oliveira dos Santos",
+      version: "0.1",
+      date: "14 de outubro de 2026",
+      steps: [
+        {
+          id: "previoc",
+          shortTitle: "1. Expectativas",
+          title: "Expectativas Prévias",
+          description: "Premissas necessárias antes de iniciar os testes de fluxo:",
+          items: [
+            "A bancada foi adequadamente montada de acordo com o procedimento de montagem.",
+            "Não há vazamentos na bancada ou tubulações."
+          ],
+          images: [
+            {
+              title: "Bancada Montada",
+              caption: "Visão geral da bancada montada e pronta para verificação.",
+              svgColor: "#002B49",
+              icon: "bancada"
+            }
+          ]
+        },
+        {
+          id: "rev1",
+          shortTitle: "2. Fluxo Reverso 1",
+          title: "Primeiro Fluxo Reverso",
+          description: "O fluxo reverso é acionado pela bomba no computador (vazões de 1 ml/min e 1.5 ml/min):",
+          items: [
+            "Verificar o volume poroso da amostra no arquivo síntese ou perguntando ao responsável.",
+            "Apertar o botão <span class='labview-btn-tag'>REV</span> no canto superior esquerdo do LabVIEW.",
+            "Ajustar a vazão a 1 ml/min e aguardar que a pressão total esteja equilibrada no painel do LabVIEW.",
+            "Parar a bomba, aguardar a estabilização da pressão e abrir a válvula de equalização da pressão.",
+            "Após equalização, fechar a válvula e apertar o botão <span class='labview-btn-tag'>CLEAR</span> no LabVIEW e depois <span class='labview-btn-tag'>SET</span>. Clique em 'sim' ou 'okay', até que a pressão fique perto do valor zero. Ligue novamente a bomba.",
+            "Após a estabilização da pressão, começar a fazer a gravação (No LabVIEW: ajustar o número de dados para 5, criar a pasta com o nome da amostra. Na bomba Quizix: clicar em Set up Datalog, mudar o nome do arquivo, dar ok e confirmar. Apertar <span class='labview-btn-tag'>TARA</span> e <span class='labview-btn-tag'>GRAVAÇÃO</span> no LabVIEW) e aguarde 3 volumes porosos na vazão de 1 ml/min.",
+            "Mude para vazão de 1.5 ml/min e aguarde mais 3 volumes porosos.",
+            "Clique no botão <span class='labview-btn-tag'>GRAVAÇÃO</span> para encerrar o LabVIEW e end datalog no software da bomba."
+          ],
+          images: [
+            {
+              title: "LabVIEW - REV",
+              caption: "Botão REV acionado e ajuste de vazão no LabVIEW.",
+              svgColor: "#002B49",
+              icon: "labview"
+            },
+            {
+              title: "Quizix - Datalog",
+              caption: "Configuração do Datalog no software da bomba Quizix.",
+              svgColor: "#C8102E",
+              icon: "quizix"
+            }
+          ]
+        },
+        {
+          id: "dir1",
+          shortTitle: "3. Fluxo Direto 1",
+          title: "Primeiro Fluxo Direto",
+          description: "Inversão do fluxo no painel do LabVIEW:",
+          items: [
+            "No fluxo direto, repita os procedimentos anteriores mudando somente o botão de <span class='labview-btn-tag'>REV</span> para <span class='labview-btn-tag'>DIR</span>."
+          ],
+          images: [
+            {
+              title: "LabVIEW - DIR",
+              caption: "Seleção do botão DIR para alteração do fluxo direto.",
+              svgColor: "#002B49",
+              icon: "labview"
+            }
+          ]
+        },
+        {
+          id: "injecao",
+          shortTitle: "4. Injeção Dano",
+          title: "Injeção do Dano",
+          description: "Injeção do fluido de dano na amostra com duração exata de 2 horas:",
+          items: [
+            "Parar a bomba e apertar <span class='labview-btn-tag'>CLEAR</span> no LabVIEW.",
+            "Manualmente apertar na válvula que comunica com a garrafa de dano, e com a bomba em vazão constante faça a sangria da bomba.",
+            "Pare a bomba, feche a válvula da tubulação do dano e altere a bomba para pressão constante (Constant pressure delivery).",
+            "Configure a pressão de trabalho do ensaio (1000 + pressão de trabalho/overbalance).",
+            "Após a bomba estabilizar na pressão, inicie a gravação conforme etapas anteriores.",
+            "Aperte o botão <span class='labview-btn-tag'>FD</span> no LabVIEW e então abra a válvula da linha do dano no sentido do experimento.",
+            "O ensaio de dano tem duração exata de 2h.",
+            "Após o ensaio, pare a gravação e então pare a bomba."
+          ],
+          images: [
+            {
+              title: "Garrafa de Dano",
+              caption: "Sangria da bomba e acionamento da válvula da linha do dano.",
+              svgColor: "#5D6D7E",
+              icon: "valvula"
+            },
+            {
+              title: "LabVIEW - FD",
+              caption: "Botão FD ativado no LabVIEW para início da injeção de dano.",
+              svgColor: "#002B49",
+              icon: "labview"
+            }
+          ]
+        },
+        {
+          id: "flush",
+          shortTitle: "5. Flush",
+          title: "Procedimento de Flush",
+          description: "Limpeza do sistema e remoção do fluido de dano:",
+          items: [
+            "Mude a bomba para vazão constante (constant rate delivery).",
+            "Retire a pressão do cilindro de dano abrindo a válvula pro sentido da atmosfera.",
+            "Desmonte a linha do cilindro.",
+            "Com o auxílio de um becker, COM CUIDADO abra vagarosamente a linha do ensaio para que o fluido de dano saia do sistema e colete no becker. Não deixar a pressão cair abaixo dos 700 Psi.",
+            "Aperta o botão <span class='labview-btn-tag'>REV</span> no LabVIEW e aguarde a pressão retomar próximo dos 900 Psi e repita o processo de flush.",
+            "Repita os passos anteriores até que o líquido coletado no becker seja límpido e livre de sólidos."
+          ],
+          images: [
+            {
+              title: "Coleta no Becker",
+              caption: "Abertura vagarosa da linha mantendo pressão acima de 700 Psi.",
+              svgColor: "#C8102E",
+              icon: "flush"
+            }
+          ]
+        },
+        {
+          id: "rev2",
+          shortTitle: "6. Fluxo Rev. Final",
+          title: "Fluxo Reverso Final",
+          description: "Etapa final do teste para avaliação final de permeabilidade:",
+          items: [
+            "Pare a bomba, aperte <span class='labview-btn-tag'>CLEAR</span> no LabVIEW e faça a limpeza da back pressure.",
+            "Após remontado, aperte em <span class='labview-btn-tag'>REV</span> na vazão de 1.5 ml/min e, após estabilizar a pressão, comece a gravação e aguarde 10 volumes porosos."
+          ],
+          images: [
+            {
+              title: "Limpeza Back Pressure",
+              caption: "Limpeza do regulador de pressão e início de 10 volumes porosos.",
+              svgColor: "#002B49",
+              icon: "labview"
+            }
+          ]
+        }
+      ]
+    };
+
+    let currentStepIndex = 0;
+    let currentSlideIndex = 0;
+
+    // Função para abrir IT
+    function openIT(id) {
+      document.getElementById('hub-view').style.display = 'none';
+      document.getElementById('detail-view').style.display = 'block';
+      document.getElementById('btn-home').style.display = 'flex';
+      
+      renderFlowchart();
+      loadStep(0);
+    }
+
+    // Função para voltar ao Hub
+    function showHub() {
+      document.getElementById('hub-view').style.display = 'block';
+      document.getElementById('detail-view').style.display = 'none';
+      document.getElementById('btn-home').style.display = 'none';
+    }
+
+    // Renderizar Nós do Fluxograma
+    function renderFlowchart() {
+      const container = document.getElementById('flowchart-nodes');
+      container.innerHTML = '';
+
+      itData.steps.forEach((step, index) => {
+        const node = document.createElement('div');
+        node.className = `flow-node ${index === currentStepIndex ? 'active' : ''}`;
+        node.onclick = () => loadStep(index);
+
+        node.innerHTML = `
+          <div class="flow-node-num">ETAPA 0${index + 1}</div>
+          <div class="flow-node-title">${step.shortTitle}</div>
+        `;
+
+        container.appendChild(node);
+
+        if (index < itData.steps.length - 1) {
+          const arrow = document.createElement('div');
+          arrow.className = 'flow-arrow';
+          arrow.innerText = '➔';
+          container.appendChild(arrow);
+        }
+      });
+    }
+
+    // Carregar Etapa do Fluxograma
+    function loadStep(index) {
+      currentStepIndex = index;
+      const step = itData.steps[index];
+
+      // Atualizar classe ativa nos nós do fluxograma
+      const nodes = document.querySelectorAll('.flow-node');
+      nodes.forEach((node, idx) => {
+        if (idx === index) node.classList.add('active');
+        else node.classList.remove('active');
+      });
+
+      // Atualizar Textos
+      document.getElementById('step-title').innerText = step.title;
+      document.getElementById('step-desc').innerText = step.description;
+
+      // Renderizar Checklist Clicável
+      const checklistContainer = document.getElementById('checklist-container');
+      checklistContainer.innerHTML = '';
+
+      step.items.forEach((itemText) => {
+        const li = document.createElement('li');
+        li.className = 'check-item';
+        li.onclick = () => toggleCheck(li);
+
+        li.innerHTML = `
+          <div class="check-box">✓</div>
+          <div class="check-text">${itemText}</div>
+        `;
+
+        checklistContainer.appendChild(li);
+      });
+
+      // Renderizar Carrossel
+      setupCarousel(step.images);
+    }
+
+    // Função de clique no Checklist
+    function toggleCheck(element) {
+      element.classList.toggle('completed');
+    }
+
+    // Gerar SVG do Placeholder para o Carrossel
+    function generatePlaceholderSVG(imgObj) {
+      return `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 450" width="100%" height="100%">
+          <rect width="600" height="450" fill="${imgObj.svgColor}" />
+          <circle cx="300" cy="180" r="60" fill="none" stroke="white" stroke-width="4" opacity="0.3" />
+          <rect x="220" y="130" width="160" height="100" rx="8" fill="none" stroke="white" stroke-width="4" opacity="0.5" />
+          <text x="300" y="290" fill="white" font-family="sans-serif" font-size="22" font-weight="bold" text-anchor="middle">${imgObj.title}</text>
+          <text x="300" y="325" fill="white" font-family="sans-serif" font-size="14" opacity="0.75" text-anchor="middle">LABORE UNICAMP - BANCADA DE DANO</text>
+        </svg>
+      `;
+    }
+
+    // Configuração do Carrossel
+    function setupCarousel(images) {
+      currentSlideIndex = 0;
+      const slidesContainer = document.getElementById('carousel-slides-container');
+      const indicatorsContainer = document.getElementById('carousel-indicators');
+
+      // Limpar slides anteriores (mantendo os botões de navegação)
+      const existingSlides = slidesContainer.querySelectorAll('.carousel-slide');
+      existingSlides.forEach(slide => slide.remove());
+      indicatorsContainer.innerHTML = '';
+
+      images.forEach((imgObj, idx) => {
+        const slide = document.createElement('div');
+        slide.className = `carousel-slide ${idx === 0 ? 'active' : ''}`;
+        slide.innerHTML = generatePlaceholderSVG(imgObj);
+        
+        // Inserir antes dos botões de controle
+        slidesContainer.insertBefore(slide, slidesContainer.querySelector('.carousel-prev'));
+
+        const ind = document.createElement('div');
+        ind.className = `indicator ${idx === 0 ? 'active' : ''}`;
+        ind.onclick = () => goToSlide(idx);
+        indicatorsContainer.appendChild(ind);
+      });
+
+      updateCarouselCaption(images);
+    }
+
+    function changeSlide(direction) {
+      const step = itData.steps[currentStepIndex];
+      const slides = document.querySelectorAll('.carousel-slide');
+      const indicators = document.querySelectorAll('.indicator');
+
+      if (slides.length === 0) return;
+
+      slides[currentSlideIndex].classList.remove('active');
+      indicators[currentSlideIndex].classList.remove('active');
+
+      currentSlideIndex = (currentSlideIndex + direction + slides.length) % slides.length;
+
+      slides[currentSlideIndex].classList.add('active');
+      indicators[currentSlideIndex].classList.add('active');
+
+      updateCarouselCaption(step.images);
+    }
+
+    function goToSlide(index) {
+      const step = itData.steps[currentStepIndex];
+      const slides = document.querySelectorAll('.carousel-slide');
+      const indicators = document.querySelectorAll('.indicator');
+
+      if (slides.length === 0) return;
+
+      slides[currentSlideIndex].classList.remove('active');
+      indicators[currentSlideIndex].classList.remove('active');
+
+      currentSlideIndex = index;
+
+      slides[currentSlideIndex].classList.add('active');
+      indicators[currentSlideIndex].classList.add('active');
+
+      updateCarouselCaption(step.images);
+    }
+
+    function updateCarouselCaption(images) {
+      const caption = document.getElementById('carousel-caption');
+      if (images && images[currentSlideIndex]) {
+        caption.innerText = images[currentSlideIndex].caption;
+      } else {
+        caption.innerText = '';
+      }
+    }
+  </script>
+</body>
+</html>
